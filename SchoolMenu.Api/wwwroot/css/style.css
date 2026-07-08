@@ -216,6 +216,20 @@ button {
         background: var(--primary-dark);
     }
 
+.arrowButton {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: var(--primary);
+    color: white;
+    font: inherit;
+    cursor: pointer;
+}
+
+.arrowButton:hover {
+    background: var(--primary-dark) !important;
+}
+
 /* ---------------- Админ панел ---------------- */
 .panel {
     background: var(--card);
@@ -357,5 +371,27 @@ button {
 
 
 .add-product-btn {
+    margin-top: 30px;
+}
+
+/*categories-------------*/
+
+.categories-container {
+    text-align: center;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+
+.categories-container h2 {
+    margin-bottom: 30px;
+}
+
+
+.categories-container .products-table {
+    margin: 0 auto;
+}
+
+.categories-container .add-product-btn {
     margin-top: 30px;
 }

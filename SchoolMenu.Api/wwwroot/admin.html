@@ -116,7 +116,7 @@
             <!-- Date navigation -->
             <div class="date-selector">
 
-                <button id="previous-day">
+                <button class="arrowButton" id="previous-day">
                     ◀
                 </button>
 
@@ -125,12 +125,12 @@
                         08 July 2026
                     </h3>
 
-                    <button id="today-button">
+                    <button class="arrowButton" id="today-button">
                         Today
                     </button>
                 </div>
 
-                <button id="next-day">
+                <button class="arrowButton" id="next-day">
                     ▶
                 </button>
 
@@ -169,7 +169,34 @@
 
 
     <section id="categories-section" class="hidden">
-        <!-- Categories page content -->
+        <div class="categories-container">
+            <br />
+
+            <h2>Categories</h2>
+
+            <table class="products-table">
+
+                <thead>
+                    <tr>
+                        <th>Category name</th>
+                        <th>Number of products</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="categories-list">
+
+                    <!-- JavaScript fills this -->
+
+                </tbody>
+
+            </table>
+
+            <button class="button add-product-btn">
+                ➕ Add Category
+            </button>
+
+        </div>
     </section>
 
     <script src="js/api.js"></script>

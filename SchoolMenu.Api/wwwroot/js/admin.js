@@ -10,6 +10,59 @@
 // ============================================================
 
 // --- "Пазач" на страницата: само кухнята има достъп ---
+let selectedDate = new Date();
+
+function formatDate(date) {
+    return date.toISOString().split("T")[0];
+}
+
+function updateDateDisplay() {
+    const options = {
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+    };
+    document.getElementById("selected-date").textContent =
+        selectedDate.toLocaleDateString("en-GB", options);
+}
+
+async function loadDailyMenu() {
+    const date = formatDate(selectedDate);
+    document.getElementById("selected-date").textContent = date;
+    try {
+        const menu = await getMenuForDate(date);
+        document.getElementById("products-list").innerHTML = `
+            <tr>
+                <td>${menu.soup.name}</td>
+                <td>Soup</td>
+                <td>${menu.soup.allergens ?? "-"}</td>
+            </tr>
+
+            <tr>
+                <td>${menu.mainCourse.name}</td>
+                <td>Main</td>
+                <td>${menu.mainCourse.allergens ?? "-"}</td>
+            </tr>
+
+            <tr>
+                <td>${menu.dessert.name}</td>
+                <td>Dessert</td>
+                <td>${menu.dessert.allergens ?? "-"}</td>
+            </tr>
+        `;
+    }
+    catch {
+
+        document.getElementById("products-list").innerHTML = `
+            <tr>
+                <td colspan="3">
+                    No menu available
+                </td>
+            </tr>
+        `;
+    }
+}
+
 async function guard() {
   const user = await getCurrentUser();   // от api.js
   if (!user || user.role !== "kitchen") {
@@ -50,6 +103,67 @@ document.getElementById("item-form").addEventListener("submit", async (e) => {
   }
 });
 
+const previousDay = document.getElementById("previous-day");
+
+if (previousDay) {
+    previousDay.addEventListener("click", () => {
+
+        selectedDate.setDate(
+            selectedDate.getDate() - 1
+        );
+
+        updateDateDisplay();
+        loadDailyMenu();
+
+    });
+}
+
+
+const nextDay = document.getElementById("next-day");
+
+if (nextDay) {
+    nextDay.addEventListener("click", () => {
+
+        selectedDate.setDate(
+            selectedDate.getDate() + 1
+        );
+
+        updateDateDisplay();
+        loadDailyMenu();
+
+    });
+}
+
+const todayButton = document.getElementById("today-button");
+
+if (todayButton) {
+    todayButton.addEventListener("click", () => {
+
+        selectedDate = new Date();
+
+        updateDateDisplay();
+        loadDailyMenu();
+
+    });
+}
+
+function showSection(sectionId) {
+    const sections = [
+        document.getElementById("dashboard-section"),
+        document.getElementById("products-section"),
+        document.getElementById("categories-section")
+    ];
+
+    sections.forEach(section => {
+        section.style.display = "none";
+    });
+    document.getElementById(sectionId).style.display = "block";
+    if (sectionId === "products-section") {
+        loadDailyMenu();
+    }
+
+}
+
 // --- Изход ---
 document.getElementById("btn-logout").addEventListener("click", async () => {
   await logout();
@@ -57,22 +171,13 @@ document.getElementById("btn-logout").addEventListener("click", async () => {
 });
 
 // --- Старт на страницата ---
-guard().then(user => { if (user) loadItems(); });
+guard().then(user => {
+    if (user) {
+        loadItems();
+        updateDateDisplay();
+    }
+});
 
-function showSection(sectionId) {
-
-    const sections = [
-        "dashboard-section",
-        "products-section",
-        "categories-section"
-    ];
-
-    sections.forEach(id => {
-        document.getElementById(id).style.display = "none";
-    });
-
-    document.getElementById(sectionId).style.display = "block";
-}
 // ═══════════════════════════════════════════════════════════
 //  ЗАДАЧА 1: Форма "Създай дневно меню"
 //
