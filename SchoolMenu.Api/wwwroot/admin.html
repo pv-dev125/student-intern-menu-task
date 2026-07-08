@@ -1,65 +1,180 @@
 <!DOCTYPE html>
-<html lang="bg">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Кухня | Админ панел</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AC Arcus | Cafeteria Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
-  <header>
-    <h1>👩‍🍳 Кухня — админ панел</h1>
-    <div class="header-right">
-      <!-- Потребителското име се попълва от admin.js -->
-      <span id="who"></span>
-      <button id="btn-logout">Изход</button>
-    </div>
-  </header>
+    <header class="dashboard-header">
+        <div>
+            <h1>🏫 AC Arcus School Cafeteria</h1>
+            <p>Cafeteria Management Dashboard</p>
+        </div>
 
-  <main>
+        <div class="header-actions">
+            <span id="who"></span>
+            <button id="btn-logout">
+                Logout
+            </button>
+        </div>
+    </header>
 
-    <!-- ====================================================
-         СЕКЦИЯ 1: Ястия (РАБОТЕЩ ПРИМЕР за запис в базата)
-         ==================================================== -->
-    <section class="panel">
-      <h2>Ястия</h2>
+    <br />
 
-      <!-- Списъкът се пълни от admin.js -> loadItems() -->
-      <ul id="items-list"></ul>
+    <nav class="dashboard-nav">
+        <button onclick="showSection('dashboard-section')">
+            Dashboard
+        </button>
 
-      <h3>Добави ново ястие</h3>
-      <form id="item-form">
-        <input id="item-name" placeholder="Име, напр. Леща чорба" required>
-        <select id="item-type">
-          <option value="soup">🍲 Супа</option>
-          <option value="main">🍛 Основно</option>
-          <option value="dessert">🍰 Десерт</option>
-        </select>
-        <input id="item-allergens" placeholder="Алергени, напр. глутен, мляко (по желание)">
-        <button type="submit">Добави ястие</button>
-      </form>
+        <button onclick="showSection('products-section')">
+            Products
+        </button>
+
+        <button onclick="showSection('categories-section')">
+            Categories
+        </button>
+    </nav>
+
+    <section id="dashboard-section">
+        <main class="dashboard-container">
+
+            <!-- Welcome -->
+            <section class="welcome-card">
+                <h2>Welcome back 👋</h2>
+                <p>
+                    Manage your school cafeteria menu, products and categories from one place.
+                </p>
+            </section>
+
+            <br>
+
+            <!-- Statistics -->
+            <section class="stats-section">
+
+                <h2>Statistics</h2>
+                <br />
+                <div class="stats-grid">
+
+                    <table class="stats-table">
+                        <thead>
+                            <tr>
+                                <th>🍽 Products</th>
+                                <th>📂 Categories</th>
+                                <th>👥 Users</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td id="product-count">0</td>
+                                <td id="category-count">0</td>
+                                <td id="user-count">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                </div>
+
+            </section>
+
+
+            <!-- Quick actions -->
+            <section class="quick-actions">
+
+                <h2>Quick Actions</h2>
+
+                <br />
+
+                <div class="action-buttons">
+
+                    <button class="action-btn">
+                        ➕ Add Product
+                    </button>
+
+                    <button class="action-btn">
+                        📂 Add Category
+                    </button>
+
+                </div>
+
+            </section>
+        </main>
     </section>
 
-    <!-- ====================================================
-         СЕКЦИЯ 2: Дневно меню - ТВОЯТА ЗАДАЧА 1
-         ==================================================== -->
-    <section class="panel todo-box">
-      <h2>Дневно меню</h2>
-      <p>
-        <strong>ЗАДАЧА 1:</strong> Тук направи форма за създаване на дневно меню:
-        дата + три падащи списъка (супа, основно, десерт) + бележки + бутон „Публикувай“.
-      </p>
-      <p>
-        Точните стъпки са описани в <code>js/admin.js</code> (най-долу).
-        Сървърът вече е готов — ползвай <code>postMenu()</code> от <code>js/api.js</code>.
-        Формата „Добави ястие“ по-горе е твоят модел за подражание!
-      </p>
+
+    <section id="products-section" class="hidden">
+        <br />
+        <main class="products-container">
+
+            <h2>Products</h2>
+
+
+            <!-- Date navigation -->
+            <div class="date-selector">
+
+                <button id="previous-day">
+                    ◀
+                </button>
+
+                <div class="current-date">
+                    <h3 id="selected-date">
+                        08 July 2026
+                    </h3>
+
+                    <button id="today-button">
+                        Today
+                    </button>
+                </div>
+
+                <button id="next-day">
+                    ▶
+                </button>
+
+            </div>
+
+
+            <!-- Products table -->
+            <table class="products-table">
+
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th>Allergens</th>
+                    </tr>
+                </thead>
+
+                <tbody id="products-list">
+
+                    <!-- JavaScript fills this -->
+
+                </tbody>
+
+            </table>
+
+
+            <!-- Add button -->
+            <button class="action-btn add-product-btn">
+                ➕ Add Product
+            </button>
+
+
+        </main>
+
     </section>
 
-  </main>
 
-  <script src="js/api.js"></script>
-  <script src="js/admin.js"></script>
+    <section id="categories-section" class="hidden">
+        <!-- Categories page content -->
+    </section>
+
+    <script src="js/api.js"></script>
+    <script src="js/admin.js"></script>
+
 </body>
 </html>
+

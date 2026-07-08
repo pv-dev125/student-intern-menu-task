@@ -59,6 +59,20 @@ document.getElementById("btn-logout").addEventListener("click", async () => {
 // --- Старт на страницата ---
 guard().then(user => { if (user) loadItems(); });
 
+function showSection(sectionId) {
+
+    const sections = [
+        "dashboard-section",
+        "products-section",
+        "categories-section"
+    ];
+
+    sections.forEach(id => {
+        document.getElementById(id).style.display = "none";
+    });
+
+    document.getElementById(sectionId).style.display = "block";
+}
 // ═══════════════════════════════════════════════════════════
 //  ЗАДАЧА 1: Форма "Създай дневно меню"
 //
