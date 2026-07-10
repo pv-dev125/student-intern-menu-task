@@ -11,14 +11,32 @@ using SchoolMenu.Api.Data;
 namespace SchoolMenu.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260710061636_AddPriceAndWeightToMenuItem")]
-    partial class AddPriceAndWeightToMenuItem
+    [Migration("20260710080700_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.11");
+
+            modelBuilder.Entity("SchoolMenu.Api.Models.Categories", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
 
             modelBuilder.Entity("SchoolMenu.Api.Models.DailyMenu", b =>
                 {
@@ -61,6 +79,12 @@ namespace SchoolMenu.Api.Migrations
                     b.Property<string>("Allergens")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
@@ -82,6 +106,8 @@ namespace SchoolMenu.Api.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("MenuItems");
                 });
@@ -131,6 +157,20 @@ namespace SchoolMenu.Api.Migrations
                     b.Navigation("MainCourse");
 
                     b.Navigation("Soup");
+                });
+
+            modelBuilder.Entity("SchoolMenu.Api.Models.MenuItem", b =>
+                {
+                    b.HasOne("SchoolMenu.Api.Models.Categories", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("SchoolMenu.Api.Models.Categories", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

@@ -97,6 +97,19 @@ async function getCategories() {
 
 }
 
+async function getMenuItemsForDate(date) {
+
+    const res = await fetch(
+        `${API_BASE}/menuitems?date=${date}`
+    );
+
+    if (!res.ok) {
+        throw new Error("Failed loading products");
+    }
+
+    return await res.json();
+}
+
 async function postCategory(categoryData) {
 
     const res = await fetch(`${API_BASE}/categories`, {

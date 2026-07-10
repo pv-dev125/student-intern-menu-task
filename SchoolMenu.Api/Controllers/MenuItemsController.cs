@@ -25,15 +25,21 @@ public class MenuItemsController : ControllerBase
     //  ЧЕТЕНЕ: GET /api/menuitems
     //  Връща всички ястия като JSON. Достъпно за всички.
     // --------------------------------------------------------
-    [HttpGet]
-    [AllowAnonymous]
-    public async Task<IActionResult> GetAll()
-    {
-        // EF Core превръща този ред в SQL: SELECT * FROM MenuItems
-        var items = await _db.MenuItems.ToListAsync();
 
-        // Ok() = HTTP 200 + списъкът, автоматично превърнат в JSON
-        return Ok(items);
+    [HttpGet]
+    public async Task<IActionResult> GetAll([FromQuery] DateTime? date)
+    {
+        var query = _db.MenuItems
+            .Include(x => x.Category)
+            .AsQueryable();
+
+        if (date.HasValue)
+        {
+            query = query.Where(x =>
+                x.Date.Date == date.Value.Date);
+        }
+
+        return Ok(await query.ToListAsync());
     }
 
     // --------------------------------------------------------

@@ -120,11 +120,12 @@ if (addProductForm) {
             categoryId: Number(
                 document.getElementById("product-category").value
             ),
-            allergens: document.getElementById("product-allergens").value
+            allergens: document.getElementById("product-allergens").value,
+            date: document.getElementById("product-date").value
         };
 
 
-        await addProduct(product);
+        await postMenuItem(product);
 
         alert("Product added successfully");
 
@@ -317,11 +318,29 @@ if (previousDay) {
         );
 
         updateDateDisplay();
-        loadDailyMenu();
+        loadProductsForDate();
 
     });
 }
 
+async function loadProductsForDate() {
+
+    const date = formatDate(selectedDate);
+
+    const products = await getMenuItemsForDate(date);
+
+
+    document.getElementById("products-list").innerHTML =
+        products.map(product => `
+
+        <tr>
+            <td>${product.name}</td>
+            <td>${product.category.name}</td>
+            <td>${product.allergens ?? "-"}</td>
+        </tr>
+
+        `).join("");
+}
 
 const nextDay = document.getElementById("next-day");
 
@@ -333,7 +352,7 @@ if (nextDay) {
         );
 
         updateDateDisplay();
-        loadDailyMenu();
+        loadProductsForDate();
 
     });
 }
@@ -346,7 +365,7 @@ if (todayButton) {
         selectedDate = new Date();
 
         updateDateDisplay();
-        loadDailyMenu();
+        loadProductsForDate();
 
     });
 }

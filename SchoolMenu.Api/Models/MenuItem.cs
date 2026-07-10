@@ -25,7 +25,7 @@ public class MenuItem
     public decimal Price { get; set; }
 
     public int Weight { get; set; }
-
+    public DateTime Date { get; set; }
     public string? Description { get; set; }    // по желание ("?" = може да е празно/null)
 
     public string? Allergens { get; set; }      // напр. "глутен, мляко"
