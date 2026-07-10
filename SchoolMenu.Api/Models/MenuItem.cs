@@ -22,6 +22,10 @@ public class MenuItem
     // Вид на ястието. Позволени стойности: "soup" | "main" | "dessert"
     public string Type { get; set; } = "";
 
+    public decimal Price { get; set; }
+
+    public int Weight { get; set; }
+
     public string? Description { get; set; }    // по желание ("?" = може да е празно/null)
 
     public string? Allergens { get; set; }      // напр. "глутен, мляко"

@@ -95,8 +95,9 @@
                         ➕ Add Product
                     </button>
 
-                    <button class="action-btn">
-                        📂 Add Category
+                    <button class="action-btn"
+                            onclick="showSection('add-category-section')">
+                        ➕ Add Category
                     </button>
 
                 </div>
@@ -156,6 +157,7 @@
 
             </table>
 
+            <br />
 
             <!-- Add button -->
             <button class="action-btn" onclick="showSection('add-product-section')">
@@ -192,7 +194,10 @@
 
             </table>
 
-            <button class="button add-product-btn">
+            <br />
+
+            <button class="action-btn"
+                    onclick="showSection('add-category-section')">
                 ➕ Add Category
             </button>
 
@@ -245,6 +250,23 @@
                 <textarea id="product-description">
             </textarea>
 
+                <label>
+                    Price
+                </label>
+
+                <input type="number"
+                       step="0.01"
+                       id="product-price"
+                       required>
+
+
+                <label>
+                    Weight (grams)
+                </label>
+
+                <input type="number"
+                       id="product-weight"
+                       required>
 
                 <label>
                     Allergens
@@ -257,6 +279,50 @@
 
                 <button class="action-btn" type="submit">
                     Save Product
+                </button>
+
+
+            </form>
+
+
+        </main>
+
+    </section>
+
+    <section id="add-category-section" class="hidden">
+
+        <main class="products-container">
+
+            <br>
+
+            <h2>Add Category</h2>
+
+
+            <form id="add-category-form">
+
+
+                <label>
+                    Category name
+                </label>
+
+                <input type="text"
+                       id="category-name"
+                       required>
+
+
+                <label>
+                    Description
+                </label>
+
+                <textarea id="category-description">
+            </textarea>
+
+
+                <button class="action-btn"
+                        type="submit">
+
+                    Save Category
+
                 </button>
 
 

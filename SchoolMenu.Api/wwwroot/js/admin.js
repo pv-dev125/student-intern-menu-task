@@ -128,7 +128,18 @@ if (addProductForm) {
 
 
                 allergens:
-                    document.getElementById("product-allergens").value || null
+                    document.getElementById("product-allergens").value || null,
+
+                price:
+                    Number(
+                        document.getElementById("product-price").value,
+                    ),
+
+
+                weight:
+                    Number(
+                        document.getElementById("product-weight").value
+                    )
 
             };
 
@@ -145,6 +156,57 @@ if (addProductForm) {
 
 
                 showSection("products-section");
+
+            }
+            catch (err) {
+
+                alert(err.message);
+
+            }
+
+        }
+    );
+
+}
+
+const addCategoryForm =
+    document.getElementById("add-category-form");
+
+
+if (addCategoryForm) {
+
+    addCategoryForm.addEventListener(
+        "submit",
+        async function (e) {
+
+            e.preventDefault();
+
+
+            const category = {
+
+                name:
+                    document.getElementById("category-name").value,
+
+
+                description:
+                    document.getElementById("category-description").value || null
+
+            };
+
+
+            try {
+
+                await postCategory(category);
+
+
+                alert("Category added successfully");
+
+
+                this.reset();
+
+
+                showSection("categories-section");
+
 
             }
             catch (err) {
@@ -208,7 +270,8 @@ function showSection(sectionId) {
         document.getElementById("dashboard-section"),
         document.getElementById("products-section"),
         document.getElementById("categories-section"),
-        document.getElementById("add-product-section")
+        document.getElementById("add-product-section"),
+        document.getElementById("add-category-section")
     ];
 
     sections.forEach(section => {

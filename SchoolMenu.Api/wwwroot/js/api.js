@@ -85,6 +85,36 @@ async function postMenuItem(item) {
   return await res.json();
 }
 
+async function postCategory(categoryData) {
+
+    const res = await fetch(`${API_BASE}/categories`, {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(categoryData)
+
+    });
+
+
+    if (!res.ok) {
+
+        const err = await res.json();
+
+        throw new Error(
+            err.message || "Failed to add category"
+        );
+
+    }
+
+
+    return await res.json();
+
+}
+
 // ═══════════════════════════════════════════════════════════
 //  ТУК ЩЕ ДОБАВЯШ НОВИ ФУНКЦИИ, като стигнеш до задачите.
 //  Копирай модела от готовите функции по-горе!

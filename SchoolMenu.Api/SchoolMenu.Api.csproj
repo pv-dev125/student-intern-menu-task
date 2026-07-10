@@ -9,6 +9,10 @@
   <!-- NuGet пакети (добавят се с: dotnet add package <име>) -->
   <ItemGroup>
     <!-- SQLite поддръжка за Entity Framework Core -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.11" />
     <!-- Хеширане на пароли - НИКОГА не пазим пароли като текст! -->
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
