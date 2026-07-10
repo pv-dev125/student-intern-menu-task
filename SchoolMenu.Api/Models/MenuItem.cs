@@ -31,4 +31,9 @@ public class MenuItem
     public string? Allergens { get; set; }      // напр. "глутен, мляко"
 
     public string? ImageUrl { get; set; }       // бонус задача: снимка на ястието
+
+
+    public int? CategoryId { get; set; }
+
+    public Categories? Category { get; set; }
 }

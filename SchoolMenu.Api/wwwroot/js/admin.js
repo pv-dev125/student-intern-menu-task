@@ -63,7 +63,38 @@ async function loadDailyMenu() {
     }
 }
 
+async function loadCategories() {
 
+    try {
+
+        const categories = await getCategories();
+
+        document.getElementById("categories-list").innerHTML =
+            categories.map(category => `
+            
+            <tr>
+                <td>${category.name}</td>
+                <td>0</td>
+                <td>
+                    <button>
+                        Edit
+                    </button>
+                    <button>
+                        Delete
+                    </button>
+                </td>
+            </tr>
+
+            `).join("");
+
+    }
+    catch (err) {
+
+        console.error(err);
+
+    }
+
+}
 
 async function guard() {
   const user = await getCurrentUser();   // от api.js
@@ -107,6 +138,62 @@ if (addProductForm) {
 
 // --- РАБОТЕЩ ПРИМЕР: добавяне на ново ястие ---
 
+
+async function loadProducts() {
+
+    const products = await getMenuItems();
+
+    document.getElementById("products-list").innerHTML =
+        products.map(product => `
+
+        <tr>
+            <td>${product.name}</td>
+            <td>${product.type}</td>
+            <td>${product.allergens ?? "-"}</td>
+        </tr>
+
+        `).join("");
+
+}
+
+async function loadCategoryDropdown() {
+
+    const select = document.getElementById("product-category");
+
+    if (!select) {
+        return;
+    }
+
+    try {
+
+        const categories = await getCategories();
+
+
+        select.innerHTML = `
+            <option value="">
+                Select category
+            </option>
+        `;
+
+
+        categories.forEach(category => {
+
+            select.innerHTML += `
+                <option value="${category.id}">
+                    ${category.name}
+                </option>
+            `;
+
+        });
+
+    }
+    catch (error) {
+
+        console.error("Could not load categories:", error);
+
+    }
+
+}
 
 if (addProductForm) {
 
@@ -287,11 +374,14 @@ function showSection(sectionId) {
     }
 
     if (sectionId === "products-section") {
-        loadDailyMenu();
+        loadProducts();
     }
 
     if (sectionId === "add-product-section") {
-        loadCategoriesForProduct();
+        loadCategoryDropdown();
+    }
+    if (sectionId === "categories-section") {
+        loadCategories();
     }
 }
 

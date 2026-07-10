@@ -50,8 +50,6 @@ public class MenuItemsController : ControllerBase
         if (string.IsNullOrWhiteSpace(item.Name))
             return BadRequest(new { message = "Името на ястието е задължително" });
 
-        if (item.Type != "soup" && item.Type != "main" && item.Type != "dessert")
-            return BadRequest(new { message = "Type трябва да е soup, main или dessert" });
 
         _db.MenuItems.Add(item);         // 1) слагаме обекта в "чакалнята"
         await _db.SaveChangesAsync();    // 2) чак СЕГА се записва в menu.db (INSERT)

@@ -85,6 +85,18 @@ async function postMenuItem(item) {
   return await res.json();
 }
 
+async function getCategories() {
+
+    const res = await fetch(`${API_BASE}/categories`);
+
+    if (!res.ok) {
+        throw new Error("Failed to load categories");
+    }
+
+    return await res.json();
+
+}
+
 async function postCategory(categoryData) {
 
     const res = await fetch(`${API_BASE}/categories`, {

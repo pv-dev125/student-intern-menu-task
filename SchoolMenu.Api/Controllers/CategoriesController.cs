@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SchoolMenu.Api.Data;
 using SchoolMenu.Api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace SchoolMenu.Api.Controllers;
 
@@ -22,7 +23,7 @@ public class CategoriesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Categories>>> GetCategories()
     {
-        return Ok(_context.Categories.ToList());
+        return Ok(await _context.Categories.ToListAsync());
     }
 
 
@@ -35,5 +36,6 @@ public class CategoriesController : ControllerBase
 
         return Ok(category);
     }
+
 
 }
