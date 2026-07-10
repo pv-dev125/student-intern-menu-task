@@ -91,7 +91,7 @@
 
                 <div class="action-buttons">
 
-                    <button class="action-btn">
+                    <button class="action-btn" onclick="showSection('add-product-section')">
                         ➕ Add Product
                     </button>
 
@@ -158,7 +158,7 @@
 
 
             <!-- Add button -->
-            <button class="action-btn add-product-btn">
+            <button class="action-btn" onclick="showSection('add-product-section')">
                 ➕ Add Product
             </button>
 
@@ -197,6 +197,74 @@
             </button>
 
         </div>
+    </section>
+
+    <section id="add-product-section" class="hidden">
+
+        <main class="products-container">
+
+            <br>
+
+            <h2>Add Product</h2>
+
+
+            <form id="add-product-form">
+
+
+                <label>
+                    Date
+                </label>
+
+                <input type="date"
+                       id="product-date"
+                       required>
+
+
+                <label>
+                    Product name
+                </label>
+
+                <input type="text"
+                       id="product-name"
+                       required>
+
+
+                <label>
+                    Category
+                </label>
+
+                <select id="product-category" required>
+                    <!-- Categories loaded here -->
+                </select>
+
+
+                <label>
+                    Description
+                </label>
+
+                <textarea id="product-description">
+            </textarea>
+
+
+                <label>
+                    Allergens
+                </label>
+
+                <input type="text"
+                       id="product-allergens"
+                       placeholder="milk, gluten, nuts...">
+
+
+                <button class="action-btn" type="submit">
+                    Save Product
+                </button>
+
+
+            </form>
+
+
+        </main>
+
     </section>
 
     <script src="js/api.js"></script>

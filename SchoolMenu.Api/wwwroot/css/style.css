@@ -146,6 +146,10 @@ h3 {
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
+.hidden {
+    display: none;
+}
+
     .stats-table th {
         background: #2563eb;
         color: white;

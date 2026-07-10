@@ -63,6 +63,8 @@ async function loadDailyMenu() {
     }
 }
 
+
+
 async function guard() {
   const user = await getCurrentUser();   // от api.js
   if (!user || user.role !== "kitchen") {
@@ -73,35 +75,88 @@ async function guard() {
   return user;
 }
 
-// --- Зарежда и показва списъка с ястия ---
-async function loadItems() {
-  const items = await getMenuItems();    // от api.js
-  const typeName = { soup: "🍲 супа", main: "🍛 основно", dessert: "🍰 десерт" };
+const addProductForm = document.getElementById("add-product-form");
 
-  // За всяко ястие правим по един <li> и ги слепваме в общ текст
-  document.getElementById("items-list").innerHTML = items
-    .map(i => `<li>${i.name} <span class="tag">${typeName[i.type] ?? i.type}</span></li>`)
-    .join("");
+if (addProductForm) {
+
+    addProductForm.addEventListener("submit", async function (e) {
+
+        e.preventDefault();
+
+        const product = {
+            name: document.getElementById("product-name").value,
+            description: document.getElementById("product-description").value,
+            categoryId: Number(
+                document.getElementById("product-category").value
+            ),
+            allergens: document.getElementById("product-allergens").value
+        };
+
+
+        await addProduct(product);
+
+        alert("Product added successfully");
+
+        this.reset();
+
+        showSection("products-section");
+
+    });
+
 }
 
 // --- РАБОТЕЩ ПРИМЕР: добавяне на ново ястие ---
-document.getElementById("item-form").addEventListener("submit", async (e) => {
-  e.preventDefault();   // спри презареждането на страницата (стандартно за форми + JS)
 
-  try {
-    // Събираме стойностите от формата в обект и го пращаме към сървъра
-    await postMenuItem({
-      name: document.getElementById("item-name").value,
-      type: document.getElementById("item-type").value,
-      allergens: document.getElementById("item-allergens").value || null,
-    });
 
-    document.getElementById("item-form").reset();  // изчисти формата
-    await loadItems();   // презареди списъка - новото ястие идва ОТ БАЗАТА!
-  } catch (err) {
-    alert(err.message);  // напр. "Името на ястието е задължително"
-  }
-});
+if (addProductForm) {
+
+    addProductForm.addEventListener(
+        "submit",
+        async function (e) {
+
+            e.preventDefault();
+
+
+            const item = {
+
+                name:
+                    document.getElementById("product-name").value,
+
+
+                type:
+                    document.getElementById("product-category").value,
+
+
+                allergens:
+                    document.getElementById("product-allergens").value || null
+
+            };
+
+
+            try {
+
+                await postMenuItem(item);
+
+
+                alert("Product added successfully");
+
+
+                this.reset();
+
+
+                showSection("products-section");
+
+            }
+            catch (err) {
+
+                alert(err.message);
+
+            }
+
+        }
+    );
+
+}
 
 const previousDay = document.getElementById("previous-day");
 
@@ -148,21 +203,36 @@ if (todayButton) {
 }
 
 function showSection(sectionId) {
+
     const sections = [
         document.getElementById("dashboard-section"),
         document.getElementById("products-section"),
-        document.getElementById("categories-section")
+        document.getElementById("categories-section"),
+        document.getElementById("add-product-section")
     ];
 
     sections.forEach(section => {
-        section.style.display = "none";
+        if (section) {
+            section.classList.add("hidden");
+        }
     });
-    document.getElementById(sectionId).style.display = "block";
+
+    const selectedSection = document.getElementById(sectionId);
+
+    if (selectedSection) {
+        selectedSection.classList.remove("hidden");
+    }
+
     if (sectionId === "products-section") {
         loadDailyMenu();
     }
 
+    if (sectionId === "add-product-section") {
+        loadCategoriesForProduct();
+    }
 }
+
+window.showSection = showSection;
 
 // --- Изход ---
 document.getElementById("btn-logout").addEventListener("click", async () => {
@@ -172,10 +242,10 @@ document.getElementById("btn-logout").addEventListener("click", async () => {
 
 // --- Старт на страницата ---
 guard().then(user => {
-    if (user) {
-        loadItems();
-        updateDateDisplay();
-    }
+    if (!user)
+        return;
+    updateDateDisplay();
+    showSection("dashboard-section");
 });
 
 // ═══════════════════════════════════════════════════════════
