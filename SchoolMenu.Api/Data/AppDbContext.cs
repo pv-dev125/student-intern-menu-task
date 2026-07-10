@@ -29,4 +29,5 @@ public class AppDbContext : DbContext
     public DbSet<MenuItem> MenuItems => Set<MenuItem>();
     public DbSet<DailyMenu> DailyMenus => Set<DailyMenu>();
     public DbSet<User> Users => Set<User>();
+    public DbSet<Categories> Categories { get; set; }
 }

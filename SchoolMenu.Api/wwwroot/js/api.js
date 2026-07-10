@@ -111,7 +111,11 @@ async function postCategory(categoryData) {
     }
 
 
-    return await res.json();
+    const text = await res.text();
+
+    console.log(text);
+
+    return text ? JSON.parse(text) : null;
 
 }
 
