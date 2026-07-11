@@ -85,6 +85,17 @@ async function postMenuItem(item) {
   return await res.json();
 }
 
+async function getStats() {
+
+    const response = await fetch("/api/categories/stats");
+
+    if (!response.ok) {
+        throw new Error("Could not load statistics");
+    }
+
+    return await response.json();
+}
+
 async function getCategories() {
 
     const res = await fetch(`${API_BASE}/categories`);

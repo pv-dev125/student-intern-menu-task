@@ -26,6 +26,19 @@ function updateDateDisplay() {
         selectedDate.toLocaleDateString("en-GB", options);
 }
 
+async function loadDashboardStats() {
+    try {
+        const products = await getMenuItems();
+        const categories = await getCategories();
+
+        document.getElementById("product-count").textContent = products.length;
+        document.getElementById("category-count").textContent = categories.length;
+
+    } catch (err) {
+        console.error("Failed to load dashboard statistics:", err);
+    }
+}
+
 async function loadDailyMenu() {
     const date = formatDate(selectedDate);
     document.getElementById("selected-date").textContent = date;
@@ -74,7 +87,7 @@ async function loadCategories() {
             
             <tr>
                 <td>${category.name}</td>
-                <td>0</td>
+                <td>${category.productCount ?? 0}</td>
                 <td>
                     <button onclick="editCategory(${category.id})">
                         Edit
@@ -183,30 +196,23 @@ async function loadProducts() {
     document.getElementById("products-list").innerHTML =
         products.map(product => `
 
-        <tr>
-            <td>${product.name}</td>
+    <tr>
+        <td>${product.name}</td>
+        <td>${product.category.name}</td>
+        <td>${product.allergens ?? "-"}</td>
+        <td>${product.price.toFixed(2)} </td>
+        <td>
+            <button onclick="editProduct(${product.id})">
+                Edit
+            </button>
 
-            <td>
-                ${product.category.name}
-            </td>
+            <button onclick="deleteProduct(${product.id})">
+                Delete
+            </button>
+        </td>
+    </tr>
 
-            <td>
-                ${product.allergens ?? "-"}
-            </td>
-
-            <td>
-                <button onclick="editProduct(${product.id})">
-                    ✏️ Edit
-                </button>
-
-                <button onclick="deleteProduct(${product.id})">
-                    🗑 Delete
-                </button>
-            </td>
-        </tr>
-
-        `).join("");
-
+    `).join("");
 }
 
 async function deleteProduct(id) {
@@ -403,8 +409,11 @@ if (addProductForm) {
 
                     alert("Product added successfully");
 
+
+
                 }
 
+                loadDashboardStats();
 
                 this.reset();
 
@@ -459,6 +468,7 @@ if (addCategoryForm) {
 
                 this.reset();
 
+                loadDashboardStats();
 
                 showSection("categories-section");
 
@@ -501,23 +511,17 @@ async function loadProductsForDate() {
         products.map(product => `
 
         <tr>
-            <td>${product.name}</td>
-
-            <td>
-                ${product.category?.name ?? "-"}
-            </td>
-
-            <td>
-                ${product.allergens ?? "-"}
-            </td>
-
-            <td>
+             <td>${product.name}</td>
+             <td>${product.category.name}</td>
+             <td>${product.allergens ?? "-"}</td>
+             <td>${product.price.toFixed(2)} лв.</td>
+             <td>
                 <button onclick="editProduct(${product.id})">
-                    ✏️ Edit
+                    Edit
                 </button>
 
                 <button onclick="deleteProduct(${product.id})">
-                    🗑 Delete
+                    Delete
                 </button>
             </td>
         </tr>
@@ -554,6 +558,29 @@ if (todayButton) {
     });
 }
 
+async function loadStatistics() {
+
+    try {
+
+        const stats = await getStats();
+
+        document.getElementById("product-count").textContent =
+            stats.products;
+
+        document.getElementById("category-count").textContent =
+            stats.categories;
+
+        document.getElementById("user-count").textContent =
+            "-";
+
+    }
+    catch (err) {
+
+        console.error(err);
+
+    }
+}
+
 function showSection(sectionId) {
 
     const sections = [
@@ -586,6 +613,9 @@ function showSection(sectionId) {
     if (sectionId === "categories-section") {
         loadCategories();
     }
+    if (sectionId === "dashboard-section") {
+        loadDashboardStats();
+    }
 }
 
 window.showSection = showSection;
@@ -601,6 +631,7 @@ guard().then(user => {
     if (!user)
         return;
     updateDateDisplay();
+    loadStatistics();
     showSection("dashboard-section");
 });
 

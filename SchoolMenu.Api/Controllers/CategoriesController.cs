@@ -19,12 +19,32 @@ public class CategoriesController : ControllerBase
     }
 
 
+    [HttpGet("stats")]
+    public async Task<IActionResult> GetStats()
+    {
+        var result = new
+        {
+            Products = await _context.MenuItems.CountAsync(),
+            Categories = await _context.Categories.CountAsync()
+        };
 
+        return Ok(result);
+    }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Categories>>> GetCategories()
+    public async Task<IActionResult> GetAll()
     {
-        return Ok(await _context.Categories.ToListAsync());
+        var categories = await _context.Categories
+            .Select(c => new
+            {
+                c.Id,
+                c.Name,
+                c.Description,
+                ProductCount = c.Products.Count()
+            })
+            .ToListAsync();
+
+        return Ok(categories);
     }
 
 
