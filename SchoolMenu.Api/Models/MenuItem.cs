@@ -33,7 +33,7 @@ public class MenuItem
     public string? ImageUrl { get; set; }       // бонус задача: снимка на ястието
 
 
-    public int? CategoryId { get; set; }
+    public int CategoryId { get; set; }
 
-    public Categories? Category { get; set; }
+    public Categories? Category { get; set; } = null!;
 }

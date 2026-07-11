@@ -2,22 +2,23 @@
 using SchoolMenu.Api.Data;
 using SchoolMenu.Api.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SchoolMenu.Api.Controllers;
 
-
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/categories")]
 public class CategoriesController : ControllerBase
 {
 
     private readonly AppDbContext _context;
 
-
     public CategoriesController(AppDbContext context)
     {
         _context = context;
     }
+
+
 
 
     [HttpGet]
@@ -37,5 +38,60 @@ public class CategoriesController : ControllerBase
         return Ok(category);
     }
 
+    [HttpPut("{id}")]
+    [Authorize(Roles = "kitchen")]
+    public async Task<IActionResult> Update(int id, [FromBody] Categories updatedCategory)
+    {
+        var category = await _context.Categories.FindAsync(id);
 
+        if (category == null)
+            return NotFound();
+
+
+        if (string.IsNullOrWhiteSpace(updatedCategory.Name))
+            return BadRequest(new { message = "Name is required" });
+
+
+        category.Name = updatedCategory.Name;
+        category.Description = updatedCategory.Description;
+
+
+        await _context.SaveChangesAsync();
+
+
+        return Ok(category);
+    }
+
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "kitchen")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var category = await _context.Categories
+            .Include(c => c.Products)
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+
+        if (category == null)
+            return NotFound();
+
+
+        if (category.Products.Any())
+        {
+            return BadRequest(new
+            {
+                message = "Cannot delete category because it has products."
+            });
+        }
+
+
+        _context.Categories.Remove(category);
+
+        await _context.SaveChangesAsync();
+
+
+        return Ok(new
+        {
+            message = "Category deleted"
+        });
+    }
 }

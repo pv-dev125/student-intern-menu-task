@@ -144,6 +144,47 @@ async function postCategory(categoryData) {
 
 }
 
+async function updateCategory(id, category) {
+
+    const response = await fetch(
+        `/api/categories/${id}`,
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(category)
+        }
+    );
+
+
+    if (!response.ok) {
+        throw new Error("Failed to update category");
+    }
+
+
+    return await response.json();
+}
+
+
+async function deleteCategory(id) {
+
+    const response = await fetch(
+        `/api/categories/${id}`,
+        {
+            method: "DELETE"
+        }
+    );
+
+
+    if (!response.ok) {
+        throw new Error("Failed to delete category");
+    }
+
+
+    return await response.json();
+}
+
 // ═══════════════════════════════════════════════════════════
 //  ТУК ЩЕ ДОБАВЯШ НОВИ ФУНКЦИИ, като стигнеш до задачите.
 //  Копирай модела от готовите функции по-горе!

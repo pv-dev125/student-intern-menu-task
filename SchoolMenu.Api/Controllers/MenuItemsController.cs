@@ -64,6 +64,55 @@ public class MenuItemsController : ControllerBase
         return Created($"/api/menuitems/{item.Id}", item);
     }
 
+    [HttpPut("{id}")]
+    [Authorize(Roles = "kitchen")]
+    public async Task<IActionResult> Update(int id, [FromBody] MenuItem updatedItem)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        var item = await _db.MenuItems.FindAsync(id);
+
+        if (item == null)
+            return NotFound();
+
+
+        if (string.IsNullOrWhiteSpace(updatedItem.Name))
+            return BadRequest(new { message = "Name is required" });
+
+
+        item.Name = updatedItem.Name;
+        item.Description = updatedItem.Description;
+        item.CategoryId = updatedItem.CategoryId;
+        item.Date = updatedItem.Date;
+        item.Allergens = updatedItem.Allergens;
+        item.Price = updatedItem.Price;
+        item.Weight = updatedItem.Weight;
+
+
+        await _db.SaveChangesAsync();
+
+
+        return Ok(item);
+    }
+
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "kitchen,admin")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var item = await _db.MenuItems.FindAsync(id);
+
+        if (item == null)
+            return NotFound(new { message = "Ястието не е намерено" });
+
+        _db.MenuItems.Remove(item);
+
+        await _db.SaveChangesAsync();
+
+        return Ok(new { message = "Ястието е изтрито" });
+    }
+
     // ═══════════════════════════════════════════════════════
     //  ЗАДАЧА ПО ЖЕЛАНИЕ: изтриване на ястие
     //  DELETE /api/menuitems/{id}

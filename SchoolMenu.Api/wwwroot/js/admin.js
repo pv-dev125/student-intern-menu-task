@@ -76,10 +76,11 @@ async function loadCategories() {
                 <td>${category.name}</td>
                 <td>0</td>
                 <td>
-                    <button>
+                    <button onclick="editCategory(${category.id})">
                         Edit
                     </button>
-                    <button>
+
+                    <button onclick="deleteCategoryAdmin(${category.id})">
                         Delete
                     </button>
                 </td>
@@ -96,6 +97,71 @@ async function loadCategories() {
 
 }
 
+async function editCategory(id) {
+
+    const categories = await getCategories();
+
+    const category = categories.find(
+        c => c.id === id
+    );
+
+
+    if (!category)
+        return;
+
+
+    const name = prompt(
+        "Category name:",
+        category.name
+    );
+
+
+    if (!name)
+        return;
+
+
+    const description = prompt(
+        "Description:",
+        category.description ?? ""
+    );
+
+
+    await updateCategory(id, {
+        name: name,
+        description: description
+    });
+
+
+    alert("Category updated");
+
+
+    loadCategories();
+}
+
+
+
+async function deleteCategoryAdmin(id) {
+
+    if (!confirm("Delete this category?"))
+        return;
+
+
+    try {
+
+        await deleteCategory(id);
+
+        alert("Category deleted");
+
+        loadCategories();
+
+    }
+    catch (error) {
+
+        alert(error.message);
+
+    }
+}
+
 async function guard() {
   const user = await getCurrentUser();   // от api.js
   if (!user || user.role !== "kitchen") {
@@ -108,37 +174,7 @@ async function guard() {
 
 const addProductForm = document.getElementById("add-product-form");
 
-if (addProductForm) {
-
-    addProductForm.addEventListener("submit", async function (e) {
-
-        e.preventDefault();
-
-        const product = {
-            name: document.getElementById("product-name").value,
-            description: document.getElementById("product-description").value,
-            categoryId: Number(
-                document.getElementById("product-category").value
-            ),
-            allergens: document.getElementById("product-allergens").value,
-            date: document.getElementById("product-date").value
-        };
-
-
-        await postMenuItem(product);
-
-        alert("Product added successfully");
-
-        this.reset();
-
-        showSection("products-section");
-
-    });
-
-}
-
 // --- РАБОТЕЩ ПРИМЕР: добавяне на ново ястие ---
-
 
 async function loadProducts() {
 
@@ -149,12 +185,120 @@ async function loadProducts() {
 
         <tr>
             <td>${product.name}</td>
-            <td>${product.type}</td>
-            <td>${product.allergens ?? "-"}</td>
+
+            <td>
+                ${product.category.name}
+            </td>
+
+            <td>
+                ${product.allergens ?? "-"}
+            </td>
+
+            <td>
+                <button onclick="editProduct(${product.id})">
+                    ✏️ Edit
+                </button>
+
+                <button onclick="deleteProduct(${product.id})">
+                    🗑 Delete
+                </button>
+            </td>
         </tr>
 
         `).join("");
 
+}
+
+async function deleteProduct(id) {
+
+    if (!confirm("Delete this product?"))
+        return;
+
+    try {
+
+        const response = await fetch(`/api/menuitems/${id}`, {
+            method: "DELETE"
+        });
+
+        if (!response.ok)
+            throw new Error("Delete failed");
+
+
+        alert("Product deleted");
+
+        loadProducts();
+
+    }
+    catch (err) {
+
+        alert(err.message);
+
+    }
+}
+
+
+async function editProduct(id) {
+
+    console.log("Editing product:", id);
+
+    const products = await getMenuItems();
+
+    const product = products.find(p => p.id === id);
+
+    console.log("Found product:", product);
+
+    if (!product) {
+        alert("Product not found");
+        return;
+    }
+
+
+    document.getElementById("product-name").value =
+        product.name ?? "";
+
+
+    document.getElementById("product-allergens").value =
+        product.allergens ?? "";
+
+
+    document.getElementById("product-date").value =
+        product.date
+            ? product.date.substring(0, 10)
+            : "";
+
+
+    document.getElementById("product-category").value =
+        product.category.id;
+
+
+    document.getElementById("product-description").value =
+        product.description ?? "";
+
+    document.getElementById("product-price").value =
+        product.price ?? 0;
+
+    document.getElementById("product-weight").value =
+        product.weight ?? 0;
+
+
+    const hidden = document.getElementById("editing-product-id");
+
+    if (hidden) {
+        hidden.value = product.id;
+    }
+    else {
+        console.error("Missing editing-product-id input");
+    }
+
+
+    const button = document.getElementById("save-product-button");
+
+    if (button) {
+        button.innerText = "Update Product";
+    }
+
+
+    showSection("add-product-section");
 }
 
 async function loadCategoryDropdown() {
@@ -207,41 +351,64 @@ if (addProductForm) {
 
             const item = {
 
-                name:
-                    document.getElementById("product-name").value,
+                name: document.getElementById("product-name").value,
 
+                type: "",
 
-                type:
-                    document.getElementById("product-category").value,
+                description:
+                    document.getElementById("product-description").value,
 
+                categoryId:
+                    Number(document.getElementById("product-category").value),
 
                 allergens:
                     document.getElementById("product-allergens").value || null,
 
                 price:
-                    Number(
-                        document.getElementById("product-price").value,
-                    ),
-
+                    Number(document.getElementById("product-price").value),
 
                 weight:
-                    Number(
-                        document.getElementById("product-weight").value
-                    )
+                    Number(document.getElementById("product-weight").value),
+
+                date:
+                    document.getElementById("product-date").value
 
             };
 
 
+            const id =
+                document.getElementById("editing-product-id").value;
+
+
             try {
 
-                await postMenuItem(item);
+                if (id) {
 
+                    console.log(item);
 
-                alert("Product added successfully");
+                    await fetch(`/api/menuitems/${id}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(item)
+                    });
+
+                    alert("Product updated");
+
+                }
+                else {
+
+                    await postMenuItem(item);
+
+                    alert("Product added successfully");
+
+                }
 
 
                 this.reset();
 
+                document.getElementById("editing-product-id").value = "";
 
                 showSection("products-section");
 
@@ -335,11 +502,28 @@ async function loadProductsForDate() {
 
         <tr>
             <td>${product.name}</td>
-            <td>${product.category.name}</td>
-            <td>${product.allergens ?? "-"}</td>
+
+            <td>
+                ${product.category?.name ?? "-"}
+            </td>
+
+            <td>
+                ${product.allergens ?? "-"}
+            </td>
+
+            <td>
+                <button onclick="editProduct(${product.id})">
+                    ✏️ Edit
+                </button>
+
+                <button onclick="deleteProduct(${product.id})">
+                    🗑 Delete
+                </button>
+            </td>
         </tr>
 
         `).join("");
+
 }
 
 const nextDay = document.getElementById("next-day");
@@ -419,6 +603,51 @@ guard().then(user => {
     updateDateDisplay();
     showSection("dashboard-section");
 });
+
+async function updateCategory(id, category) {
+
+    const response = await fetch(
+        `/api/categories/${id}`,
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(category)
+        }
+    );
+
+
+    if (!response.ok) {
+        throw new Error("Failed to update category");
+    }
+
+
+    return await response.json();
+}
+
+
+
+async function deleteCategory(id) {
+
+    const response = await fetch(
+        `/api/categories/${id}`,
+        {
+            method: "DELETE"
+        }
+    );
+
+
+    const data = await response.json();
+
+
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to delete category");
+    }
+
+
+    return data;
+}
 
 // ═══════════════════════════════════════════════════════════
 //  ЗАДАЧА 1: Форма "Създай дневно меню"

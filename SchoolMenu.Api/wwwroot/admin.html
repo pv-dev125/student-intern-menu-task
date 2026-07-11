@@ -146,6 +146,7 @@
                         <th>Product</th>
                         <th>Category</th>
                         <th>Allergens</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
 
@@ -215,6 +216,8 @@
 
             <form id="add-product-form">
 
+                <input type="hidden" id="editing-product-id">
+
 
                 <label>
                     Date
@@ -281,7 +284,7 @@
                        placeholder="milk, gluten, nuts...">
 
 
-                <button class="action-btn" type="submit">
+                <button class="action-btn" id="save-product-button" type="submit">
                     Save Product
                 </button>
 
