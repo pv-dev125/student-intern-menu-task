@@ -176,13 +176,13 @@ async function deleteCategoryAdmin(id) {
 }
 
 async function guard() {
-  const user = await getCurrentUser();   // от api.js
-  if (!user || user.role !== "kitchen") {
-    window.location.href = "login.html"; // не си влязъл -> към login
-    return null;
-  }
-  document.getElementById("who").textContent = user.username;
-  return user;
+    const user = await getCurrentUser();   // от api.js
+    if (!user || user.role !== "kitchen") {
+        window.location.href = "login.html"; // не си влязъл -> към login
+        return null;
+    }
+    document.getElementById("who").textContent = user.username;
+    return user;
 }
 
 const addProductForm = document.getElementById("add-product-form");
@@ -570,8 +570,12 @@ async function loadStatistics() {
         document.getElementById("category-count").textContent =
             stats.categories;
 
-        document.getElementById("user-count").textContent =
-            "-";
+        // admin.html's stats table doesn't have a "Users" column yet,
+        // so guard this one instead of assuming the element exists.
+        const userCountEl = document.getElementById("user-count");
+        if (userCountEl) {
+            userCountEl.textContent = "-";
+        }
 
     }
     catch (err) {
@@ -622,8 +626,8 @@ window.showSection = showSection;
 
 // --- Изход ---
 document.getElementById("btn-logout").addEventListener("click", async () => {
-  await logout();
-  window.location.href = "index.html";
+    await logout();
+    window.location.href = "index.html";
 });
 
 // --- Старт на страницата ---

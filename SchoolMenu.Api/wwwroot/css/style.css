@@ -8,12 +8,35 @@
 :root {
     --bg: #f4f6f8; /* фон на страницата */
     --card: #ffffff; /* фон на картите/панелите */
+    --card-alt: #f8fafc; /* лек алтернативен фон (чипове, панели) */
+    --border: #e5e7eb; /* рамки */
     --text: #1f2933; /* основен текст */
     --muted: #6b7280; /* по-блед текст */
     --primary: #2563eb; /* основен цвят (бутони, header) */
     --primary-dark: #1e40af; /* при hover */
+    --primary-soft: #dbeafe; /* лек фон около основния цвят */
     --danger: #dc2626; /* грешки */
+    --warn-bg: #fef3c7; /* фон за allergen badge / alert */
+    --warn-text: #92400e;
     --radius: 12px; /* заобляне на ъглите */
+    --shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Тъмен режим: активира се с data-theme="dark" на <html> */
+[data-theme="dark"] {
+    --bg: #0f1620;
+    --card: #17202b;
+    --card-alt: #1d2733;
+    --border: #2a3644;
+    --text: #e5e9f0;
+    --muted: #93a0b4;
+    --primary: #3b82f6;
+    --primary-dark: #60a5fa;
+    --primary-soft: #1e3a5f;
+    --danger: #f87171;
+    --warn-bg: #3a2e15;
+    --warn-text: #fbbf24;
+    --shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
 }
 
 /* Нулиране: браузърите слагат свои отстъпи - махаме ги */
@@ -27,6 +50,7 @@ body {
     font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
     background: var(--bg);
     color: var(--text);
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* ---------------- Header (горна лента) ---------------- */
@@ -91,7 +115,7 @@ h3 {
     align-items: center;
     gap: 14px;
     padding: 14px 0;
-    border-bottom: 1px solid #eef0f2;
+    border-bottom: 1px solid var(--border);
 }
 
     .menu-item:last-of-type {
@@ -131,9 +155,11 @@ h3 {
 
 /* Съобщение "менюто не е публикувано" */
 .alert {
-    background: #fef3c7;
+    background: var(--warn-bg);
+    color: var(--warn-text);
     border-radius: var(--radius);
     padding: 16px;
+    grid-column: 1 / -1;
 }
 
 .stats-table {
@@ -150,30 +176,30 @@ h3 {
     display: none;
 }
 
-    .stats-table th {
-        background: #2563eb;
-        color: white;
-        padding: 15px;
-        font-size: 18px;
-    }
+.stats-table th {
+    background: #2563eb;
+    color: white;
+    padding: 15px;
+    font-size: 18px;
+}
 
-    .stats-table td {
-        text-align: center;
-        padding: 20px;
-        font-size: 28px;
-        font-weight: bold;
-        color: #2563eb;
-    }
+.stats-table td {
+    text-align: center;
+    padding: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #2563eb;
+}
 
-    .stats-table th,
-    .stats-table td {
-        border-right: 1px solid #e5e7eb;
-    }
+.stats-table th,
+.stats-table td {
+    border-right: 1px solid #e5e7eb;
+}
 
-        .stats-table th:last-child,
-        .stats-table td:last-child {
-            border-right: none;
-        }
+    .stats-table th:last-child,
+    .stats-table td:last-child {
+        border-right: none;
+    }
 
 #btn-logout {
     background: white;
@@ -230,9 +256,9 @@ button {
     cursor: pointer;
 }
 
-.arrowButton:hover {
-    background: var(--primary-dark) !important;
-}
+    .arrowButton:hover {
+        background: var(--primary-dark) !important;
+    }
 
 /* ---------------- Админ панел ---------------- */
 .panel {
@@ -318,9 +344,9 @@ button {
     margin-bottom: 16px;
 }
 
-.day-nav button {
-    flex: 1;
-}
+    .day-nav button {
+        flex: 1;
+    }
 
 .products-container {
     max-width: 1000px;
@@ -338,14 +364,14 @@ button {
 }
 
 
-.date-selector button {
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 12px 18px;
-    border-radius: 8px;
-    cursor: pointer;
-}
+    .date-selector button {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 12px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+    }
 
 
 .current-date h3 {
@@ -361,17 +387,17 @@ button {
 }
 
 
-.products-table th {
-    background: #2563eb;
-    color: white;
-    padding: 15px;
-}
+    .products-table th {
+        background: #2563eb;
+        color: white;
+        padding: 15px;
+    }
 
 
-.products-table td {
-    padding: 15px;
-    border-bottom: 1px solid #ddd;
-}
+    .products-table td {
+        padding: 15px;
+        border-bottom: 1px solid #ddd;
+    }
 
 
 .add-product-btn {
@@ -387,15 +413,369 @@ button {
 }
 
 
-.categories-container h2 {
-    margin-bottom: 30px;
+    .categories-container h2 {
+        margin-bottom: 30px;
+    }
+
+
+    .categories-container .products-table {
+        margin: 0 auto;
+    }
+
+    .categories-container .add-product-btn {
+        margin-top: 30px;
+    }
+/* ============================================================
+   Student menu page - redesign
+   ============================================================ */
+
+/* ---------------- Hero header ---------------- */
+.hero {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
 }
 
-
-.categories-container .products-table {
-    margin: 0 auto;
+.hero-content {
+    display: flex;
+    align-items: center;
+    gap: 14px;
 }
 
-.categories-container .add-product-btn {
-    margin-top: 30px;
+    .hero-content .logo {
+        font-size: 2rem;
+        line-height: 1;
+    }
+
+    .hero-content h1 {
+        font-size: 1.4rem;
+    }
+
+    .hero-content p {
+        opacity: 0.85;
+        font-size: 0.9rem;
+    }
+
+#theme-toggle {
+    background: rgba(255, 255, 255, 0.18);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    #theme-toggle:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+.kitchen-link {
+    background: rgba(255, 255, 255, 0.18);
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+    .kitchen-link:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+main {
+    max-width: 900px;
+}
+
+/* ---------------- Toolbar: day navigation ---------------- */
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.date-navigation {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+    .date-navigation .arrowButton {
+        width: 42px;
+        height: 42px;
+        padding: 0;
+        border-radius: 50%;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+.current-date {
+    text-align: center;
+    min-width: 200px;
+}
+
+    .current-date h2 {
+        margin-bottom: 0;
+        font-size: 1.15rem;
+        text-transform: capitalize;
+    }
+
+.weekday-badge {
+    display: block;
+    color: var(--muted);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 2px;
+}
+
+#btn-today {
+    background: var(--card);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+}
+
+    #btn-today:hover {
+        background: var(--primary-soft);
+    }
+
+    #btn-today.is-today {
+        background: var(--primary-soft);
+        cursor: default;
+    }
+
+/* ---------------- Filters ---------------- */
+.filters {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+#search-input {
+    width: 100%;
+}
+
+.category-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.category {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+    .category:hover {
+        border-color: var(--primary);
+    }
+
+    .category.active {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+
+/* ---------------- Allergen panel ---------------- */
+.allergen-panel {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+}
+
+    .allergen-panel h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 0.95rem;
+    }
+
+.allergen-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.allergen-empty {
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.allergen-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--card-alt);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    user-select: none;
+    text-transform: capitalize;
+}
+
+    .allergen-chip input {
+        margin: 0;
+        accent-color: var(--primary);
+    }
+
+    .allergen-chip.is-hidden {
+        background: var(--warn-bg);
+        color: var(--warn-text);
+        border-color: transparent;
+    }
+
+/* ---------------- Menu grid / product cards ---------------- */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    align-items: start;
+}
+
+.product-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.product-card-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.product-emoji {
+    font-size: 1.8rem;
+    line-height: 1;
+}
+
+.product-name {
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.product-category {
+    display: block;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    margin-top: 2px;
+}
+
+.product-description {
+    color: var(--muted);
+    font-size: 0.88rem;
+}
+
+.product-meta {
+    display: flex;
+    gap: 14px;
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+.product-allergens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.allergen-badge {
+    background: var(--warn-bg);
+    color: var(--warn-text);
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 0.72rem;
+    text-transform: capitalize;
+}
+
+.product-image {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.loading,
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--muted);
+    padding: 40px 10px;
+}
+
+    .empty-state .empty-emoji {
+        display: block;
+        font-size: 2rem;
+        margin-bottom: 8px;
+    }
+
+.results-count {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 14px;
+}
+
+/* ---------------- Scroll to top ---------------- */
+#scroll-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+    #scroll-top.visible {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+    }
+
+footer {
+    text-align: center;
+    color: var(--muted);
+    padding: 24px 16px 40px;
+    font-size: 0.85rem;
+}
+
+@media (max-width: 480px) {
+    .toolbar {
+        flex-direction: column;
+    }
+
+    .current-date {
+        min-width: 0;
+    }
 }

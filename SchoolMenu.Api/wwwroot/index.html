@@ -1,40 +1,130 @@
 <!DOCTYPE html>
-<html lang="bg">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <!-- viewport = страницата да изглежда добре и на телефон -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Дневно меню</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AC Arcus School Cafeteria</title>
+
+    <!-- Dedicated stylesheet for this page only - does not touch css/style.css,
+         which admin.html and login.html still rely on. -->
+    <link rel="stylesheet" href="css/student.css">
 </head>
 <body>
 
-  <header>
-    <h1>🍽️ Дневно меню</h1>
-    <a href="login.html">Вход за кухнята</a>
-  </header>
+    <!-- ============== Fixed top navigation ============== -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-inner">
 
-  <main>
-    <!-- Датата се попълва от student.js -->
-    <h2 id="menu-date"></h2>
+            <a href="index.html" class="brand">
+                <span class="brand-icon">🍽️</span>
+                <span class="brand-name">AC Arcus</span>
+            </a>
 
-    <!-- ═══════════ ЗАДАЧА 2: Навигация между дните ═══════════
-         Разкоментирай трите бутона по-долу (изтрий този ред и
-         реда след бутоните) и виж стъпките в js/student.js.
+            <div class="navbar-actions">
+                <button id="lang-toggle" class="pill-btn" type="button" aria-label="Switch language">
+                    🌐 EN
+                </button>
 
-    <div class="day-nav">
-      <button id="btn-prev">← Вчера</button>
-      <button id="btn-today">Днес</button>
-      <button id="btn-next">Утре →</button>
-    </div>
-         ═══════════════════════════════════════════════════════ -->
+                <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle dark mode">
+                    🌙
+                </button>
 
-    <!-- Тук student.js "рисува" менюто -->
-    <div id="menu-container">Зареждане...</div>
-  </main>
+                <a href="login.html" class="btn-login" data-i18n="login">Login</a>
+            </div>
 
-  <!-- Редът е важен: първо api.js (функциите), после student.js (ползва ги) -->
-  <script src="js/api.js"></script>
-  <script src="js/student.js"></script>
+        </div>
+    </nav>
+
+    <!-- ============== Page header ============== -->
+    <header class="page-header">
+
+        <h1 data-i18n="pageTitle">AC Arcus School Cafeteria</h1>
+        <p class="page-subtitle" data-i18n="subtitle">Fresh meals prepared every day</p>
+
+        <div class="date-nav">
+
+            <button id="btn-prev" class="nav-arrow" type="button" data-i18n-aria="prevDay" aria-label="Previous day">
+                ‹
+            </button>
+
+            <div class="date-display">
+                <span id="menu-date" class="date-main"></span>
+                <span id="menu-weekday" class="date-sub"></span>
+            </div>
+
+            <button id="btn-next" class="nav-arrow" type="button" data-i18n-aria="nextDay" aria-label="Next day">
+                ›
+            </button>
+
+        </div>
+
+        <button id="btn-today" class="today-link hidden" type="button" data-i18n="jumpToday">
+            Jump to today
+        </button>
+
+    </header>
+
+    <main class="page-content">
+
+        <!-- ============== Collapsible filters ============== -->
+        <section class="filters-panel">
+
+            <button id="filters-toggle" class="filters-toggle" type="button" aria-expanded="true">
+                <span class="filters-toggle-label">
+                    <span class="filters-icon">⚙️</span>
+                    <span data-i18n="filters">Filters</span>
+                </span>
+                <span id="filters-chevron" class="chevron">▾</span>
+            </button>
+
+            <div id="filters-body" class="filters-body">
+
+                <div class="filter-search">
+                    <input id="search-input"
+                           type="text"
+                           data-i18n-placeholder="search"
+                           placeholder="Search meals...">
+                </div>
+
+                <div class="filter-columns">
+
+                    <div class="filter-group">
+                        <h4 data-i18n="categories">Categories</h4>
+                        <div id="category-filters" class="checkbox-grid">
+                            <!-- Generated dynamically from today's products -->
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <h4 data-i18n="allergens">Allergens</h4>
+                        <div id="allergen-filters" class="checkbox-grid">
+                            <!-- Generated dynamically from today's products -->
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ============== Products, grouped by category ============== -->
+        <div id="menu-container" class="menu-container">
+            <p class="loading" data-i18n="loading">Loading menu…</p>
+        </div>
+
+        <p id="results-count" class="results-count hidden"></p>
+
+    </main>
+
+    <footer class="page-footer">
+        <p data-i18n="footer">School Menu © 2026</p>
+    </footer>
+
+    <button id="scroll-top" class="scroll-top" aria-label="Scroll to top">↑</button>
+
+    <script src="js/api.js"></script>
+    <script src="js/student.js"></script>
+
 </body>
 </html>

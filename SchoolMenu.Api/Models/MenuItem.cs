@@ -35,5 +35,5 @@ public class MenuItem
 
     public int CategoryId { get; set; }
 
-    public Categories Category { get; set; } = null!;
+    public Categories? Category { get; set; } = null!;
 }
