@@ -2,77 +2,161 @@ using SchoolMenu.Api.Models;
 
 namespace SchoolMenu.Api.Data;
 
-// ============================================================
-//  SeedData = първоначални (примерни) данни.
-//
-//  Изпълнява се ВЕДНЪЖ при стартиране (виж Program.cs).
-//  Ако базата вече има данни - не прави нищо.
-//
-//  Искаш други примерни ястия? Промени ги тук, после спри
-//  приложението, изтрий файла menu.db и стартирай пак.
-// ============================================================
 public static class SeedData
 {
     public static void Run(AppDbContext db)
     {
-        // Ако вече има потребители, базата е пълна -> излизаме
-        if (db.Users.Any()) return;
+        // Ако вече има данни - не правим нищо
+        if (db.Users.Any())
+            return;
 
-        // --- 1) Потребители: кухня и ученик ---
-        db.Users.Add(new User
+        // ==========================
+        // Categories
+        // ==========================
+        var soups = new Categories
         {
-            Username = "kitchen",
-            // Хешираме паролата с BCrypt - в базата НЕ стои "kitchen123"!
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword("kitchen123"),
-            Role = "kitchen",
-            DisplayName = "Кухня"
-        });
-        db.Users.Add(new User
+            Name = "Soups",
+            Description = "Soup dishes"
+        };
+
+        var mains = new Categories
         {
-            Username = "student",
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword("student123"),
-            Role = "student",
-            DisplayName = "Ученик"
-        });
+            Name = "Main Courses",
+            Description = "Main dishes"
+        };
 
-        // --- 2) Примерни ястия (по 3 от всеки вид) ---
-        var bobChorba = new MenuItem { Name = "Боб чорба", Type = "soup", Allergens = "целина" };
-        var pileshkaSupa = new MenuItem { Name = "Пилешка супа", Type = "soup", Allergens = "яйца, глутен" };
-        var tarator = new MenuItem { Name = "Таратор", Type = "soup", Allergens = "мляко" };
+        var desserts = new Categories
+        {
+            Name = "Desserts",
+            Description = "Desserts"
+        };
 
-        var musaka = new MenuItem { Name = "Мусака", Type = "main", Allergens = "мляко, яйца" };
-        var pileSOriz = new MenuItem { Name = "Пиле с ориз", Type = "main" };
-        var spagetiBologneze = new MenuItem { Name = "Спагети Болонезе", Type = "main", Allergens = "глутен" };
+        db.Categories.AddRange(soups, mains, desserts);
 
-        var kiseloMlyako = new MenuItem { Name = "Кисело мляко с мед", Type = "dessert", Allergens = "мляко" };
-        var yabalkovShtrudel = new MenuItem { Name = "Ябълков щрудел", Type = "dessert", Allergens = "глутен, яйца, мляко" };
-        var biskvitenaTorta = new MenuItem { Name = "Бисквитена торта", Type = "dessert", Allergens = "глутен, мляко" };
+        // ==========================
+        // Users
+        // ==========================
+        db.Users.AddRange(
+            new User
+            {
+                Username = "kitchen",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("kitchen123"),
+                Role = "kitchen",
+                DisplayName = "Кухня"
+            },
+            new User
+            {
+                Username = "student",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("student123"),
+                Role = "student",
+                DisplayName = "Ученик"
+            });
+
+        // ==========================
+        // Menu Items
+        // ==========================
+        var bobChorba = new MenuItem
+        {
+            Name = "Боб чорба",
+            Type = "soup",
+            Allergens = "целина",
+            Category = soups
+        };
+
+        var pileshkaSupa = new MenuItem
+        {
+            Name = "Пилешка супа",
+            Type = "soup",
+            Allergens = "яйца, глутен",
+            Category = soups
+        };
+
+        var tarator = new MenuItem
+        {
+            Name = "Таратор",
+            Type = "soup",
+            Allergens = "мляко",
+            Category = soups
+        };
+
+        var musaka = new MenuItem
+        {
+            Name = "Мусака",
+            Type = "main",
+            Allergens = "мляко, яйца",
+            Category = mains
+        };
+
+        var pileSOriz = new MenuItem
+        {
+            Name = "Пиле с ориз",
+            Type = "main",
+            Category = mains
+        };
+
+        var spagetiBologneze = new MenuItem
+        {
+            Name = "Спагети Болонезе",
+            Type = "main",
+            Allergens = "глутен",
+            Category = mains
+        };
+
+        var kiseloMlyako = new MenuItem
+        {
+            Name = "Кисело мляко с мед",
+            Type = "dessert",
+            Allergens = "мляко",
+            Category = desserts
+        };
+
+        var yabalkovShtrudel = new MenuItem
+        {
+            Name = "Ябълков щрудел",
+            Type = "dessert",
+            Allergens = "глутен, яйца, мляко",
+            Category = desserts
+        };
+
+        var biskvitenaTorta = new MenuItem
+        {
+            Name = "Бисквитена торта",
+            Type = "dessert",
+            Allergens = "глутен, мляко",
+            Category = desserts
+        };
 
         db.MenuItems.AddRange(
-            bobChorba, pileshkaSupa, tarator,
-            musaka, pileSOriz, spagetiBologneze,
-            kiseloMlyako, yabalkovShtrudel, biskvitenaTorta);
+            bobChorba,
+            pileshkaSupa,
+            tarator,
+            musaka,
+            pileSOriz,
+            spagetiBologneze,
+            kiseloMlyako,
+            yabalkovShtrudel,
+            biskvitenaTorta);
 
-        // --- 3) Меню за ДНЕС и УТРЕ (за да видиш нещо още при първия старт) ---
-        // Забележи: подаваме целия ОБЕКТ (Soup = tarator), а EF Core
-        // сам ще попълни SoupId с правилното число в базата.
-        db.DailyMenus.Add(new DailyMenu
-        {
-            Date = DateTime.Today,
-            Soup = tarator,
-            MainCourse = pileSOriz,
-            Dessert = yabalkovShtrudel,
-            Notes = "Добре дошли! Това меню е добавено автоматично от Data/SeedData.cs"
-        });
-        db.DailyMenus.Add(new DailyMenu
-        {
-            Date = DateTime.Today.AddDays(1),
-            Soup = bobChorba,
-            MainCourse = musaka,
-            Dessert = kiseloMlyako
-        });
+        // ==========================
+        // Daily Menus
+        // ==========================
+        db.DailyMenus.AddRange(
+            new DailyMenu
+            {
+                Date = DateTime.Today,
+                Soup = tarator,
+                MainCourse = pileSOriz,
+                Dessert = yabalkovShtrudel,
+                Notes = "Добре дошли! Това меню е добавено автоматично."
+            },
+            new DailyMenu
+            {
+                Date = DateTime.Today.AddDays(1),
+                Soup = bobChorba,
+                MainCourse = musaka,
+                Dessert = kiseloMlyako
+            });
 
-        // Чак този ред записва всичко по-горе във файла menu.db!
         db.SaveChanges();
     }
 }
